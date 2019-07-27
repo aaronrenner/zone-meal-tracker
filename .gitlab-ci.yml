@@ -29,8 +29,10 @@ install_asdf_env_and_deps:
   script:
     - asdf plugin-add erlang || true
     - asdf plugin-add elixir || true
+    - asdf plugin-add nodejs || true
     # Have to run twice due to: https://github.com/asdf-vm/asdf-erlang/issues/57
     - asdf install && asdf install
+    # Setting up elixir and erlang
     - mix local.hex --force
     - mix local.rebar --force
     # Cache the timestamp the repo was originally checked out, so it can
