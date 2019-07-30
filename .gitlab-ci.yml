@@ -71,12 +71,65 @@ build:test:
   variables:
     MIX_ENV: test
 
+build:integration_tester:
+  stage: build
+  cache:
+    key: $CI_JOB_NAME
+    paths:
+      - "integration_tester/_build"
+      - "integration_tester/deps"
+  variables:
+    MIX_ENV: test
+  script:
+    - cd integration_tester && mix do deps.get, compile --warnings-as-errors
+  dependencies:
+    - install_asdf_env_and_deps
+  artifacts:
+    expire_in: 2 hrs
+    paths:
+      - "integration_tester/_build"
+      - "integration_tester/deps"
+
 unit_tests:
   stage: test
   script: mix test
   dependencies:
     - install_asdf_env_and_deps
     - build:test
+
+integration_tests:
+  stage: test
+  script:
+    - |
+        mkdir /tmp/chromedriver && \
+        pushd /tmp/chromedriver && \
+        curl -O https://chromedriver.storage.googleapis.com/75.0.3770.140/chromedriver_linux64.zip && \
+        unzip chromedriver_linux64.zip && \
+        mv chromedriver /usr/local/bin &&
+        popd
+    - |
+        pushd /tmp && \
+        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+        apt-get update && \
+        (dpkg -i google-chrome-stable_current_amd64.deb || true) && \
+        apt-get -f -y install && \
+        popd
+    - cd integration_tester
+    - MIX_ENV=test mix test
+  dependencies:
+    - install_asdf_env_and_deps
+    - build:integration_tester
+
+integration_test_linters:
+  stage: test
+  script:
+    - cd integration_tester
+    - mix format --check-formatted
+    # Check for unused dependencies
+    - mix deps.unlock --unused && git diff --exit-code
+  dependencies:
+    - install_asdf_env_and_deps
+    - build:integration_tester
 
 linters:
   stage: test
