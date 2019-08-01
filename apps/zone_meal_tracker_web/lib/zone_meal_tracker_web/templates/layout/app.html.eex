@@ -12,7 +12,7 @@
       <section class="container">
         <nav role="navigation">
           <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
+            <li><%= link "Sign Up", to: Routes.user_path(@conn, :new) %></li>
           </ul>
         </nav>
         <a href="http://phoenixframework.org/" class="phx-logo">
