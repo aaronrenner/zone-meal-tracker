@@ -13,8 +13,8 @@ defmodule ZoneMealTracker do
   """
   @impl true
   @spec register_user(String.t(), String.t()) :: {:ok, User.t()}
-  def register_user(email, password) when is_binary(email) and is_binary(password) do
-    current_impl().register_user(email, password)
+  def register_user(username, password) when is_binary(username) and is_binary(password) do
+    current_impl().register_user(username, password)
   end
 
   defp current_impl do

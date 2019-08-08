@@ -16,12 +16,12 @@ defmodule ZoneMealTrackerWeb.UserControllerTest do
   end
 
   test "POST create/2 with valid params registers a user", %{conn: conn} do
-    email = "a@a.com"
+    username = "foo"
     password = "password"
-    params = %{"email" => email, "password" => password}
+    params = %{"username" => username, "password" => password}
 
-    expect(MockZoneMealTracker, :register_user, fn ^email, ^password ->
-      {:ok, %User{id: "123", email: email}}
+    expect(MockZoneMealTracker, :register_user, fn ^username, ^password ->
+      {:ok, %User{id: "123", username: username}}
     end)
 
     conn = post conn, Routes.user_path(conn, :create), sign_up_form: params

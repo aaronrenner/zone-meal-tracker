@@ -9,7 +9,7 @@ defmodule ZoneMealTracker.DevImpl do
 
   @impl true
   @spec register_user(String.t(), String.t()) :: {:ok, User.t()}
-  def register_user(email, _password) do
-    {:ok, %User{id: @user_id, email: email}}
+  def register_user(username, _password) do
+    {:ok, %User{id: @user_id, username: username}}
   end
 end

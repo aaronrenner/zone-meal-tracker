@@ -12,17 +12,17 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpFormTest do
   setup [:set_mox_from_context, :verify_on_exit!]
 
   test "run/1 calls register_user with the correct params" do
-    check all email <- string(:alphanumeric, min_length: 1),
+    check all username <- string(:alphanumeric, min_length: 1),
               password <- string(:alphanumeric, min_length: 8) do
       params = %{
-        "email" => email,
+        "username" => username,
         "password" => password
       }
 
-      user = %User{email: email}
+      user = %User{username: username}
 
       MockZoneMealTracker
-      |> expect(:register_user, fn ^email, ^password ->
+      |> expect(:register_user, fn ^username, ^password ->
         {:ok, user}
       end)
 
@@ -34,7 +34,7 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpFormTest do
     params = %{}
 
     assert {:error, %Changeset{} = changeset} = SignUpForm.run(params)
-    assert "can't be blank" in errors_on(changeset).email
+    assert "can't be blank" in errors_on(changeset).username
     assert "can't be blank" in errors_on(changeset).password
   end
 

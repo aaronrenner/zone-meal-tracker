@@ -21,7 +21,7 @@ defmodule IntegrationTesterTest do
     session
     |> visit(HomePage.path())
     |> HomePage.click_sign_up_link()
-    |> SignUpPage.register("a@a.com", "password")
+    |> SignUpPage.register("foo", "password")
     |> assert_has(Query.text("Welcome to Phoenix!"))
   end
 end

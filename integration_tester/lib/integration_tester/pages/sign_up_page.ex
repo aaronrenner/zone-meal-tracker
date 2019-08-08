@@ -3,13 +3,13 @@ defmodule IntegrationTester.Pages.SignUpPage do
 
   use Wallaby.DSL
 
-  @email_field Query.text_field("Email")
+  @username_field Query.text_field("Username")
   @password_field Query.text_field("Password")
   @sign_up_button Query.button("Register")
 
-  def register(session, email, password) do
+  def register(session, username, password) do
     session
-    |> fill_in(@email_field, with: email)
+    |> fill_in(@username_field, with: username)
     |> fill_in(@password_field, with: password)
     |> click(@sign_up_button)
   end

@@ -4,11 +4,11 @@ defmodule ZoneMealTracker.User do
   """
 
   @type id :: String.t()
-  @type email :: String.t()
+  @type username :: String.t()
   @type t :: %__MODULE__{
           id: id,
-          email: email
+          username: username
         }
 
-  defstruct [:id, :email]
+  defstruct [:id, :username]
 end

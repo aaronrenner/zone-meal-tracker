@@ -8,13 +8,13 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpForm do
   alias ZoneMealTracker.User
 
   @type t :: %__MODULE__{
-          email: String.t() | nil,
+          username: String.t() | nil,
           password: String.t() | nil
         }
 
   @primary_key false
   embedded_schema do
-    field :email, :string
+    field :username, :string
     field :password, :string
   end
 
@@ -30,14 +30,14 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpForm do
   @spec changeset(t, map()) :: Changeset.t()
   def changeset(request \\ %__MODULE__{}, params \\ %{}) do
     request
-    |> cast(params, [:email, :password])
-    |> validate_required([:email, :password])
+    |> cast(params, [:username, :password])
+    |> validate_required([:username, :password])
     |> validate_length(:password, min: 8)
   end
 
   @spec register_user(t, Changeset.t()) :: {:ok, User.t()} | {:error, Changeset.t()}
-  defp register_user(%__MODULE__{email: email, password: password}, _changeset) do
-    case ZoneMealTracker.register_user(email, password) do
+  defp register_user(%__MODULE__{username: username, password: password}, _changeset) do
+    case ZoneMealTracker.register_user(username, password) do
       {:ok, %User{} = user} ->
         {:ok, user}
     end
