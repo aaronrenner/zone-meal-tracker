@@ -7,8 +7,9 @@ defmodule ZoneMealTracker.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: ZoneMealTracker.Worker.start_link(arg)
-      # {ZoneMealTracker.Worker, arg}
+      ZoneMealTracker.DefaultImpl
+      # {ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl,
+      #  name: ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

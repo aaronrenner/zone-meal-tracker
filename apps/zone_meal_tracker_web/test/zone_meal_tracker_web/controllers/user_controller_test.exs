@@ -3,12 +3,16 @@ defmodule ZoneMealTrackerWeb.UserControllerTest do
 
   import Mox
 
-  alias ZoneMealTrackerWeb.MockZoneMealTracker
   alias ZoneMealTracker.User
+  alias ZoneMealTrackerWeb.MockAuthentication
+  alias ZoneMealTrackerWeb.MockZoneMealTracker
 
   @moduletag :capture_log
 
-  setup [:set_mox_from_context]
+  setup [
+    :set_mox_from_context,
+    :set_initial_auth_status
+  ]
 
   test "GET new/2 renders a form", %{conn: conn} do
     conn = get(conn, Routes.user_path(conn, :new))
@@ -19,14 +23,31 @@ defmodule ZoneMealTrackerWeb.UserControllerTest do
     username = "foo"
     password = "password"
     params = %{"username" => username, "password" => password}
+    mock_user = %User{id: "123", username: username}
 
     expect(MockZoneMealTracker, :register_user, fn ^username, ^password ->
-      {:ok, %User{id: "123", username: username}}
+      {:ok, mock_user}
     end)
+
+    expect(MockAuthentication, :log_in, fn conn, ^mock_user -> conn end)
 
     conn = post conn, Routes.user_path(conn, :create), sign_up_form: params
 
     assert redirected_to(conn) == Routes.page_path(conn, :index)
+  end
+
+  test "POST create/2 when username has already been registered", %{conn: conn} do
+    username = "foo"
+    password = "password"
+    params = %{"username" => username, "password" => password}
+
+    expect(MockZoneMealTracker, :register_user, fn ^username, ^password ->
+      {:error, :username_already_registered}
+    end)
+
+    conn = post conn, Routes.user_path(conn, :create), sign_up_form: params
+
+    assert html_response(conn, :ok) =~ "Sign Up"
   end
 
   test "POST create/2 rerenders the form when invalid data", %{conn: conn} do

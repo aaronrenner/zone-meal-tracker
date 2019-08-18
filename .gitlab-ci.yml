@@ -21,6 +21,8 @@ before_script:
 
 install_asdf_env_and_deps:
   stage: install
+  variables:
+    NODEJS_CHECK_SIGNATURES: "no"
   cache:
     key: install
     paths:
@@ -81,7 +83,19 @@ build:integration_tester:
   variables:
     MIX_ENV: test
   script:
-    - cd integration_tester && mix do deps.get, compile --warnings-as-errors
+    - |
+        pushd apps/zone_meal_tracker_web/assets && \
+        npm install && \
+        popd
+    - |
+        pushd apps/zone_meal_tracker_web && \
+        mix deps.get && \
+        npm run deploy --prefix ./assets && \
+        popd
+    - |
+        pushd integration_tester && \
+        mix do deps.get, compile --warnings-as-errors && \
+        popd
   dependencies:
     - install_asdf_env_and_deps
   artifacts:
@@ -89,6 +103,7 @@ build:integration_tester:
     paths:
       - "integration_tester/_build"
       - "integration_tester/deps"
+      - "apps/zone_meal_tracker_web/priv/static"
 
 unit_tests:
   stage: test
@@ -135,6 +150,7 @@ linters:
   stage: test
   script:
     - mix format --check-formatted
+    - mix credo --strict
     # Check for unused dependencies
     - mix deps.unlock --unused && git diff --exit-code
   dependencies:

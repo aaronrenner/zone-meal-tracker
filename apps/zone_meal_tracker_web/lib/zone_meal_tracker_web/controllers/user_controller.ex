@@ -1,7 +1,8 @@
 defmodule ZoneMealTrackerWeb.UserController do
   use ZoneMealTrackerWeb, :controller
 
-  alias __MODULE__.SignUpForm
+  alias ZoneMealTrackerWeb.Authentication
+  alias ZoneMealTrackerWeb.UserController.SignUpForm
 
   def new(conn, _params) do
     changeset = SignUpForm.changeset()
@@ -10,8 +11,10 @@ defmodule ZoneMealTrackerWeb.UserController do
 
   def create(conn, %{"sign_up_form" => sign_up_form_params}) do
     case SignUpForm.run(sign_up_form_params) do
-      {:ok, _user} ->
-        redirect(conn, to: Routes.page_path(conn, :index))
+      {:ok, user} ->
+        conn
+        |> Authentication.log_in(user)
+        |> redirect(to: Routes.page_path(conn, :index))
 
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)

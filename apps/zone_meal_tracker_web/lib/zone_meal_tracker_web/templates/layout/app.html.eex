@@ -12,7 +12,12 @@
       <section class="container">
         <nav role="navigation">
           <ul>
-            <li><%= link "Sign Up", to: Routes.user_path(@conn, :new) %></li>
+            <%= if logged_in?(@conn) do %>
+              <li><%= link "Log out", to: Routes.session_path(@conn, :delete), method: :delete %></li>
+            <% else %>
+              <li><%= link "Sign up", to: Routes.user_path(@conn, :new) %></li>
+              <li><%= link "Log in", to: Routes.session_path(@conn, :new) %></li>
+            <% end %>
           </ul>
         </nav>
         <a href="http://phoenixframework.org/" class="phx-logo">

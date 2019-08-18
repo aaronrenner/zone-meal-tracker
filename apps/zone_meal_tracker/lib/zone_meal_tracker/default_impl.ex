@@ -1,0 +1,87 @@
+defmodule ZoneMealTracker.DefaultImpl do
+  @moduledoc false
+
+  import ZoneMealTracker.Guards
+
+  alias ZoneMealTracker.DefaultImpl.AccountStore
+  alias ZoneMealTracker.DefaultImpl.DomainTranslator
+  alias ZoneMealTracker.Login
+  alias ZoneMealTracker.User
+
+  @behaviour ZoneMealTracker.Impl
+
+  @doc false
+  defdelegate child_spec(opts), to: __MODULE__.Supervisor
+
+  @impl true
+  @spec register_user(String.t(), String.t()) ::
+          {:ok, User.t()} | {:error, :username_already_registered}
+  def register_user(username, password) when is_username(username) and is_password(password) do
+    case AccountStore.create_user(username, password) do
+      {:ok, %AccountStore.User{} = user} ->
+        {:ok, DomainTranslator.to_domain_user(user)}
+
+      {:error, :username_not_unique} ->
+        {:error, :username_already_registered}
+    end
+  end
+
+  @impl true
+  @spec fetch_user_by_username_and_password(String.t(), String.t()) ::
+          {:ok, User.t()} | {:error, :not_found}
+  def fetch_user_by_username_and_password(username, password)
+      when is_username(username) and is_password(password) do
+    case AccountStore.fetch_user_by_username_and_password(username, password) do
+      {:ok, %AccountStore.User{} = user} ->
+        {:ok, DomainTranslator.to_domain_user(user)}
+
+      {:error, :not_found} ->
+        {:error, :not_found}
+    end
+  end
+
+  @impl true
+  @spec create_login(User.id()) :: {:ok, Login.t()} | {:error, :unknown_user_id}
+  def create_login(user_id) when is_user_id(user_id) do
+    case AccountStore.create_login(user_id) do
+      {:ok, %AccountStore.Login{} = login} ->
+        {:ok, DomainTranslator.to_domain_login(login)}
+
+      {:error, :unknown_user_id} ->
+        {:error, :unknown_user_id}
+    end
+  end
+
+  @impl true
+  @spec fetch_user_for_login_id(Login.id()) :: {:ok, User.t()} | {:error, :not_found}
+  def fetch_user_for_login_id(login_id) when is_login_id(login_id) do
+    case AccountStore.fetch_user_for_login_id(login_id) do
+      {:ok, %AccountStore.User{} = user} ->
+        {:ok, DomainTranslator.to_domain_user(user)}
+
+      {:error, :not_found} ->
+        {:error, :not_found}
+    end
+  end
+
+  @impl true
+  @spec delete_login(Login.id()) :: :ok
+  def delete_login(login_id) when is_login_id(login_id) do
+    :ok = AccountStore.delete_login(login_id)
+  end
+
+  @impl true
+  @spec reset_system([ZoneMealTracker.reset_system_opt()]) :: :ok | none
+  def reset_system(opts) when is_list(opts) do
+    case Keyword.fetch(opts, :force) do
+      {:ok, true} ->
+        :ok = AccountStore.reset(force: true)
+        :ok
+
+      _ ->
+        raise ArgumentError, """
+        must be called with `force: true`, because this wipes data from the entire system
+        """
+    end
+  end
+end

@@ -4,10 +4,10 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpFormTest do
 
   import Mox
 
+  alias Ecto.Changeset
   alias ZoneMealTracker.User
   alias ZoneMealTrackerWeb.MockZoneMealTracker
   alias ZoneMealTrackerWeb.UserController.SignUpForm
-  alias Ecto.Changeset
 
   setup [:set_mox_from_context, :verify_on_exit!]
 
@@ -27,6 +27,25 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpFormTest do
       end)
 
       assert {:ok, ^user} = SignUpForm.run(params)
+    end
+  end
+
+  test "run/1 when register_user says the username's already been registered" do
+    check all username <- string(:alphanumeric, min_length: 1),
+              password <- string(:alphanumeric, min_length: 8) do
+      params = %{
+        "username" => username,
+        "password" => password
+      }
+
+      MockZoneMealTracker
+      |> expect(:register_user, fn ^username, ^password ->
+        {:error, :username_already_registered}
+      end)
+
+      assert {:error, %Changeset{} = changeset} = SignUpForm.run(params)
+      assert "is already taken" in errors_on(changeset).username
+      assert %Changeset{action: :insert} = changeset
     end
   end
 

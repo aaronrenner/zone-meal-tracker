@@ -36,10 +36,15 @@ defmodule ZoneMealTrackerWeb.UserController.SignUpForm do
   end
 
   @spec register_user(t, Changeset.t()) :: {:ok, User.t()} | {:error, Changeset.t()}
-  defp register_user(%__MODULE__{username: username, password: password}, _changeset) do
+  defp register_user(%__MODULE__{username: username, password: password}, changeset) do
     case ZoneMealTracker.register_user(username, password) do
       {:ok, %User{} = user} ->
         {:ok, user}
+
+      {:error, :username_already_registered} ->
+        changeset
+        |> add_error(:username, "is already taken")
+        |> apply_action(:insert)
     end
   end
 end
