@@ -24,7 +24,7 @@ defmodule ZoneMealTrackerWeb.Authentication.DefaultImplTest do
 
   test "fetch_current_user/1 returns {:ok, user} when logged in", %{conn: conn} do
     login_id = "login_123"
-    user = %User{id: "user_1", username: "foo"}
+    user = %User{id: "user_1", email: "foo@bar.com"}
 
     expect(MockZoneMealTracker, :fetch_user_for_login_id, fn ^login_id ->
       {:ok, user}

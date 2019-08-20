@@ -8,8 +8,8 @@ defmodule ZoneMealTracker.DefaultImpl.DomainTranslatorTest do
 
   test "to_domain_user/1 translates an AccountStore.User to a User" do
     id = "123"
-    username = "foo"
-    account_store_user = %AccountStore.User{id: id, username: username}
+    email = "foo@bar.com"
+    account_store_user = %AccountStore.User{id: id, email: email}
 
     assert %User{} = user = DomainTranslator.to_domain_user(account_store_user)
 

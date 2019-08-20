@@ -8,20 +8,20 @@ defmodule ZoneMealTrackerWeb.SessionController.LoginForm do
   alias ZoneMealTracker.User
 
   @type t :: %__MODULE__{
-          username: String.t() | nil,
+          email: String.t() | nil,
           password: String.t() | nil
         }
 
   @primary_key false
   embedded_schema do
-    field :username, :string
+    field :email, :string
     field :password, :string
   end
 
   def changeset(form \\ %__MODULE__{}, params \\ %{}) do
     form
-    |> cast(params, [:username, :password])
-    |> validate_required([:username, :password])
+    |> cast(params, [:email, :password])
+    |> validate_required([:email, :password])
   end
 
   @spec run(map) :: {:ok, User.t()} | {:error, Changeset.t()}
@@ -34,8 +34,8 @@ defmodule ZoneMealTrackerWeb.SessionController.LoginForm do
   end
 
   @spec lookup_user(t, Changeset.t()) :: {:ok, User.t()} | {:error, Changeset.t()}
-  defp lookup_user(%__MODULE__{username: username, password: password}, changeset) do
-    case ZoneMealTracker.fetch_user_by_username_and_password(username, password) do
+  defp lookup_user(%__MODULE__{email: email, password: password}, changeset) do
+    case ZoneMealTracker.fetch_user_by_email_and_password(email, password) do
       {:ok, %User{} = user} ->
         {:ok, user}
 

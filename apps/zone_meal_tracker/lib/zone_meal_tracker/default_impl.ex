@@ -15,23 +15,23 @@ defmodule ZoneMealTracker.DefaultImpl do
 
   @impl true
   @spec register_user(String.t(), String.t()) ::
-          {:ok, User.t()} | {:error, :username_already_registered}
-  def register_user(username, password) when is_username(username) and is_password(password) do
-    case AccountStore.create_user(username, password) do
+          {:ok, User.t()} | {:error, :email_already_registered}
+  def register_user(email, password) when is_email(email) and is_password(password) do
+    case AccountStore.create_user(email, password) do
       {:ok, %AccountStore.User{} = user} ->
         {:ok, DomainTranslator.to_domain_user(user)}
 
-      {:error, :username_not_unique} ->
-        {:error, :username_already_registered}
+      {:error, :email_not_unique} ->
+        {:error, :email_already_registered}
     end
   end
 
   @impl true
-  @spec fetch_user_by_username_and_password(String.t(), String.t()) ::
+  @spec fetch_user_by_email_and_password(String.t(), String.t()) ::
           {:ok, User.t()} | {:error, :not_found}
-  def fetch_user_by_username_and_password(username, password)
-      when is_username(username) and is_password(password) do
-    case AccountStore.fetch_user_by_username_and_password(username, password) do
+  def fetch_user_by_email_and_password(email, password)
+      when is_email(email) and is_password(password) do
+    case AccountStore.fetch_user_by_email_and_password(email, password) do
       {:ok, %AccountStore.User{} = user} ->
         {:ok, DomainTranslator.to_domain_user(user)}
 

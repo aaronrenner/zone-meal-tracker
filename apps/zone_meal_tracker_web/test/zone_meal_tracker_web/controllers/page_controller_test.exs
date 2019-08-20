@@ -20,7 +20,7 @@ defmodule ZoneMealTrackerWeb.PageControllerTest do
   describe "when authenticated" do
     setup do
       expect(MockAuthentication, :fetch_current_user, fn _ ->
-        {:ok, %User{id: "1", username: "foo"}}
+        {:ok, %User{id: "1", email: "foo@bar.com"}}
       end)
 
       :ok

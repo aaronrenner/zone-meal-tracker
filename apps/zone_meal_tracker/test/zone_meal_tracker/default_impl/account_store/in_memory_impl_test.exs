@@ -12,20 +12,20 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
   end
 
   test "creating and retrieving a user", %{pid: pid} do
-    username = "foo"
+    email = "foo@bar.com"
     password = "bar"
 
-    assert {:ok, %User{id: user_id} = user} = InMemoryImpl.create_user(pid, username, password)
+    assert {:ok, %User{id: user_id} = user} = InMemoryImpl.create_user(pid, email, password)
 
     assert {:ok, ^user} = InMemoryImpl.fetch_user_for_id(pid, user_id)
   end
 
-  test "create_user/3 when a username is already taken", %{pid: pid} do
-    username = "foo"
+  test "create_user/3 when a email is already taken", %{pid: pid} do
+    email = "foo@bar.com"
     password = "bar"
-    {:ok, _} = InMemoryImpl.create_user(pid, username, password)
+    {:ok, _} = InMemoryImpl.create_user(pid, email, password)
 
-    assert {:error, :username_not_unique} = InMemoryImpl.create_user(pid, username, password)
+    assert {:error, :email_not_unique} = InMemoryImpl.create_user(pid, email, password)
   end
 
   test "fetch_user_for_id/2 returns {:error, :not_found}, when the user isn't found", %{pid: pid} do
@@ -34,40 +34,40 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
     assert {:error, :not_found} = InMemoryImpl.fetch_user_for_id(pid, user_id)
   end
 
-  test "fetch_user_by_username_and_password/3 only returns {:ok, %User{}} if both fields match",
+  test "fetch_user_by_email_and_password/3 only returns {:ok, %User{}} if both fields match",
        %{pid: pid} do
-    {:ok, user} = InMemoryImpl.create_user(pid, "good_username", "good_password")
+    {:ok, user} = InMemoryImpl.create_user(pid, "good_email", "good_password")
 
     Enum.each(
       [
-        {"good_username", "good_password"},
-        {"bad_username", "good_password"},
-        {"good_username", "bad_password"},
-        {"bad_username", "bad_password"}
+        {"good_email", "good_password"},
+        {"bad_email", "good_password"},
+        {"good_email", "bad_password"},
+        {"bad_email", "bad_password"}
       ],
       fn
-        {"good_username" = username, "good_password" = password} ->
+        {"good_email" = email, "good_password" = password} ->
           assert {:ok, ^user} =
-                   InMemoryImpl.fetch_user_by_username_and_password(pid, username, password)
+                   InMemoryImpl.fetch_user_by_email_and_password(pid, email, password)
 
-        {username, password} ->
+        {email, password} ->
           assert {:error, :not_found} =
-                   InMemoryImpl.fetch_user_by_username_and_password(pid, username, password)
+                   InMemoryImpl.fetch_user_by_email_and_password(pid, email, password)
       end
     )
   end
 
-  test "fetch_user_by_username_and_password/3 doesn't continue working after the user has been deleted",
+  test "fetch_user_by_email_and_password/3 doesn't continue working after the user has been deleted",
        %{pid: pid} do
-    username = "foo"
+    email = "foo@bar.com"
     password = "bar"
 
-    {:ok, %User{id: user_id} = user} = InMemoryImpl.create_user(pid, username, password)
-    {:ok, ^user} = InMemoryImpl.fetch_user_by_username_and_password(pid, username, password)
+    {:ok, %User{id: user_id} = user} = InMemoryImpl.create_user(pid, email, password)
+    {:ok, ^user} = InMemoryImpl.fetch_user_by_email_and_password(pid, email, password)
     :ok = InMemoryImpl.delete_user(pid, user_id)
 
     assert {:error, :not_found} =
-             InMemoryImpl.fetch_user_by_username_and_password(pid, username, password)
+             InMemoryImpl.fetch_user_by_email_and_password(pid, email, password)
   end
 
   test "delete_user/2 deletes a user when the user_id is found", %{pid: pid} do
@@ -83,7 +83,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
   end
 
   test "create_login/2 creates a new login each time when the user_id exists", %{pid: pid} do
-    {:ok, %User{id: user_id}} = InMemoryImpl.create_user(pid, "foo", "bar")
+    {:ok, %User{id: user_id}} = InMemoryImpl.create_user(pid, "foo@bar.com", "bar")
 
     {:ok, login_1} = InMemoryImpl.create_login(pid, user_id)
     {:ok, login_2} = InMemoryImpl.create_login(pid, user_id)
@@ -100,7 +100,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
   test "fetch_user_for_login_id/2 returns {:ok, %User{}} when the login id and user exist", %{
     pid: pid
   } do
-    {:ok, user} = InMemoryImpl.create_user(pid, "foo", "bar")
+    {:ok, user} = InMemoryImpl.create_user(pid, "foo@bar.com", "bar")
 
     {:ok, %Login{id: login_id}} = InMemoryImpl.create_login(pid, user.id)
 
@@ -117,7 +117,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
   test "fetch_user_for_login_id/2 returns {:error, :not_found} when the user has been deleted", %{
     pid: pid
   } do
-    {:ok, user} = InMemoryImpl.create_user(pid, "foo", "bar")
+    {:ok, user} = InMemoryImpl.create_user(pid, "foo@bar.com", "bar")
 
     {:ok, %Login{id: login_id}} = InMemoryImpl.create_login(pid, user.id)
 
@@ -127,7 +127,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
   end
 
   test "delete_login/2 deletes the login when the login id is found", %{pid: pid} do
-    {:ok, user} = InMemoryImpl.create_user(pid, "foo", "bar")
+    {:ok, user} = InMemoryImpl.create_user(pid, "foo@bar.com", "bar")
     {:ok, %Login{id: login_id}} = InMemoryImpl.create_login(pid, user.id)
 
     :ok = InMemoryImpl.delete_login(pid, login_id)
@@ -144,7 +144,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImplTest do
   end
 
   test "reset/2 with force: true, resets the data store", %{pid: pid} do
-    {:ok, %User{id: user_id}} = InMemoryImpl.create_user(pid, "foo", "bar")
+    {:ok, %User{id: user_id}} = InMemoryImpl.create_user(pid, "foo@bar.com", "bar")
     :ok = InMemoryImpl.reset(pid, force: true)
 
     assert {:error, :not_found} = InMemoryImpl.fetch_user_for_id(pid, user_id)

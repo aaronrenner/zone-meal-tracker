@@ -25,7 +25,7 @@ defmodule ZoneMealTrackerWeb.Plugs.EnsureAuthenticatedTest do
     user_id = "234"
 
     expect(MockAuthentication, :fetch_current_user, fn _conn ->
-      {:ok, %User{id: user_id, username: "foobar"}}
+      {:ok, %User{id: user_id, email: "foo@bar.com"}}
     end)
 
     conn =

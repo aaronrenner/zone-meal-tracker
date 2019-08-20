@@ -7,9 +7,9 @@
         </div>
     <% end %>
 
-    <%= label f, :username %>
-    <%= text_input f, :username %>
-    <%= error_tag f, :username %>
+    <%= label f, :email %>
+    <%= text_input f, :email %>
+    <%= error_tag f, :email %>
 
     <%= label f, :password %>
     <%= password_input f, :password %>

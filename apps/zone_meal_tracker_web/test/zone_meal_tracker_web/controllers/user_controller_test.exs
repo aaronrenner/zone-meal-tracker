@@ -20,12 +20,12 @@ defmodule ZoneMealTrackerWeb.UserControllerTest do
   end
 
   test "POST create/2 with valid params registers a user", %{conn: conn} do
-    username = "foo"
+    email = "foo@bar.com"
     password = "password"
-    params = %{"username" => username, "password" => password}
-    mock_user = %User{id: "123", username: username}
+    params = %{"email" => email, "password" => password}
+    mock_user = %User{id: "123", email: email}
 
-    expect(MockZoneMealTracker, :register_user, fn ^username, ^password ->
+    expect(MockZoneMealTracker, :register_user, fn ^email, ^password ->
       {:ok, mock_user}
     end)
 
@@ -36,13 +36,13 @@ defmodule ZoneMealTrackerWeb.UserControllerTest do
     assert redirected_to(conn) == Routes.page_path(conn, :index)
   end
 
-  test "POST create/2 when username has already been registered", %{conn: conn} do
-    username = "foo"
+  test "POST create/2 when email has already been registered", %{conn: conn} do
+    email = "foo@bar.com"
     password = "password"
-    params = %{"username" => username, "password" => password}
+    params = %{"email" => email, "password" => password}
 
-    expect(MockZoneMealTracker, :register_user, fn ^username, ^password ->
-      {:error, :username_already_registered}
+    expect(MockZoneMealTracker, :register_user, fn ^email, ^password ->
+      {:error, :email_already_registered}
     end)
 
     conn = post conn, Routes.user_path(conn, :create), sign_up_form: params

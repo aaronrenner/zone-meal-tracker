@@ -12,56 +12,54 @@ defmodule ZoneMealTracker.DefaultImplTest do
 
   setup [:set_mox_from_context, :verify_on_exit!]
 
-  test "register_user/2 when username is unique" do
-    username = "foo"
+  test "register_user/2 when email is unique" do
+    email = "foo@bar.com"
     password = "password"
-    account_store_user = %AccountStore.User{id: "123", username: username}
+    account_store_user = %AccountStore.User{id: "123", email: email}
 
-    expect(MockAccountStore, :create_user, fn ^username, ^password ->
+    expect(MockAccountStore, :create_user, fn ^email, ^password ->
       {:ok, account_store_user}
     end)
 
-    assert {:ok, %User{} = user} = DefaultImpl.register_user(username, password)
+    assert {:ok, %User{} = user} = DefaultImpl.register_user(email, password)
 
     assert user == DomainTranslator.to_domain_user(account_store_user)
   end
 
-  test "register_user/2 when username is already taken" do
-    username = "foo"
+  test "register_user/2 when email is already taken" do
+    email = "foo@bar.com"
     password = "password"
 
-    expect(MockAccountStore, :create_user, fn ^username, ^password ->
-      {:error, :username_not_unique}
+    expect(MockAccountStore, :create_user, fn ^email, ^password ->
+      {:error, :email_not_unique}
     end)
 
-    assert {:error, :username_already_registered} = DefaultImpl.register_user(username, password)
+    assert {:error, :email_already_registered} = DefaultImpl.register_user(email, password)
   end
 
-  test "fetch_user_by_username_and_password/2 when user is found" do
-    username = "foo"
+  test "fetch_user_by_email_and_password/2 when user is found" do
+    email = "foo@bar.com"
     password = "password"
-    account_store_user = %AccountStore.User{id: "123", username: username}
+    account_store_user = %AccountStore.User{id: "123", email: email}
 
-    expect(MockAccountStore, :fetch_user_by_username_and_password, fn ^username, ^password ->
+    expect(MockAccountStore, :fetch_user_by_email_and_password, fn ^email, ^password ->
       {:ok, account_store_user}
     end)
 
-    assert {:ok, %User{} = user} =
-             DefaultImpl.fetch_user_by_username_and_password(username, password)
+    assert {:ok, %User{} = user} = DefaultImpl.fetch_user_by_email_and_password(email, password)
 
     assert user == DomainTranslator.to_domain_user(account_store_user)
   end
 
-  test "fetch_user_by_username_and_password/2 when user is not found" do
-    username = "foo"
+  test "fetch_user_by_email_and_password/2 when user is not found" do
+    email = "foo@bar.com"
     password = "password"
 
-    expect(MockAccountStore, :fetch_user_by_username_and_password, fn ^username, ^password ->
+    expect(MockAccountStore, :fetch_user_by_email_and_password, fn ^email, ^password ->
       {:error, :not_found}
     end)
 
-    assert {:error, :not_found} =
-             DefaultImpl.fetch_user_by_username_and_password(username, password)
+    assert {:error, :not_found} = DefaultImpl.fetch_user_by_email_and_password(email, password)
   end
 
   test "create_login/1 when the user id exists" do
@@ -89,7 +87,7 @@ defmodule ZoneMealTracker.DefaultImplTest do
 
   test "fetch_user_for_login_id/1 when found" do
     login_id = "login_123"
-    account_store_user = %AccountStore.User{id: "123", username: "foo"}
+    account_store_user = %AccountStore.User{id: "123", email: "foo@bar.com"}
 
     expect(MockAccountStore, :fetch_user_for_login_id, fn ^login_id ->
       {:ok, account_store_user}

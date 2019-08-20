@@ -7,13 +7,13 @@ defmodule IntegrationTesterTest do
 
   @moduletag :capture_log
 
-  @username "foo"
+  @email "foo@bar.com"
   @password "password"
 
   setup do
     ZoneMealTracker.reset_system(force: true)
 
-    {:ok, _} = ZoneMealTracker.register_user(@username, @password)
+    {:ok, _} = ZoneMealTracker.register_user(@email, @password)
     :ok
   end
 
@@ -23,7 +23,7 @@ defmodule IntegrationTesterTest do
     session
     |> visit(HomePage.path())
     |> assert_current_path(LoginPage.path())
-    |> LoginPage.log_in(@username, @password)
+    |> LoginPage.log_in(@email, @password)
     |> assert_has(Query.text("Welcome to Phoenix!"))
     |> assert_current_path(HomePage.path())
   end

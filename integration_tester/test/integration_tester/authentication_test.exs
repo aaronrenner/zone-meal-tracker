@@ -19,13 +19,13 @@ defmodule IntegrationTester.AuthenticationTest do
     session
     |> visit(HomePage.path())
     |> Site.click_sign_up_link()
-    |> SignUpPage.register("foo", "password")
+    |> SignUpPage.register("foo@bar.com", "password")
     |> Site.assert_logged_in()
     |> Site.click_log_out_link()
     |> Site.assert_logged_out()
     |> Site.click_log_in_link()
-    |> LoginPage.log_in("foo", "incorrect")
-    |> LoginPage.log_in("foo", "password")
+    |> LoginPage.log_in("foo@bar.com", "incorrect")
+    |> LoginPage.log_in("foo@bar.com", "password")
     |> Site.assert_logged_in()
     |> Site.click_log_out_link()
     |> Site.assert_logged_out()
@@ -40,7 +40,7 @@ defmodule IntegrationTester.AuthenticationTest do
       session_1
       |> visit(HomePage.path())
       |> Site.click_sign_up_link()
-      |> SignUpPage.register("foo", "password")
+      |> SignUpPage.register("foo@bar.com", "password")
       |> Site.assert_logged_in()
 
     zmt_cookie_value = fetch_zmt_cookie_value!(session_1)

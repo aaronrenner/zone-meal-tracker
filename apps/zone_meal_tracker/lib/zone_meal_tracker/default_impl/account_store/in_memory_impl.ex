@@ -22,11 +22,11 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl do
   end
 
   @impl true
-  @spec create_user(User.username(), User.password()) ::
-          {:ok, User.t()} | {:error, :username_not_unique}
-  def create_user(instance \\ @default_instance, username, password)
-      when is_server(instance) and is_username(username) and is_password(password) do
-    Agent.get_and_update(instance, &State.create_user(&1, username, password))
+  @spec create_user(User.email(), User.password()) ::
+          {:ok, User.t()} | {:error, :email_not_unique}
+  def create_user(instance \\ @default_instance, email, password)
+      when is_server(instance) and is_email(email) and is_password(password) do
+    Agent.get_and_update(instance, &State.create_user(&1, email, password))
   end
 
   @spec fetch_user_for_id(User.id()) :: {:ok, User.t()}
@@ -36,11 +36,11 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl do
   end
 
   @impl true
-  @spec fetch_user_by_username_and_password(User.username(), User.password()) ::
+  @spec fetch_user_by_email_and_password(User.email(), User.password()) ::
           {:ok, User.t()} | {:error, :not_found}
-  def fetch_user_by_username_and_password(instance \\ @default_instance, username, password)
-      when is_server(instance) and is_username(username) and is_password(password) do
-    Agent.get(instance, &State.fetch_user_by_username_and_password(&1, username, password))
+  def fetch_user_by_email_and_password(instance \\ @default_instance, email, password)
+      when is_server(instance) and is_email(email) and is_password(password) do
+    Agent.get(instance, &State.fetch_user_by_email_and_password(&1, email, password))
   end
 
   @spec delete_user(User.id()) :: :ok

@@ -11,7 +11,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl.State do
   @opaque t :: %__MODULE__{
             next_login_id: integer,
             next_user_id: integer,
-            user_ids_by_credential: %{{User.username(), User.password()} => User.id()},
+            user_ids_by_credential: %{{User.email(), User.password()} => User.id()},
             logins: [Login.t()],
             users: [User.t()]
           }
@@ -28,18 +28,18 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl.State do
   end
 
   @spec create_user(t, String.t(), String.t()) ::
-          {{:ok, User.t()} | {:error, :username_not_unique}, t}
-  def create_user(%__MODULE__{} = state, username, password) when is_username(username) do
+          {{:ok, User.t()} | {:error, :email_not_unique}, t}
+  def create_user(%__MODULE__{} = state, email, password) when is_email(email) do
     %__MODULE__{
       next_user_id: next_user_id,
       users: users,
       user_ids_by_credential: user_ids_by_credential
     } = state
 
-    if username_availible?(state, username) do
+    if email_availible?(state, email) do
       user_id = to_string(next_user_id)
-      user = %User{id: user_id, username: username}
-      user_ids_by_credential = Map.put(user_ids_by_credential, {username, password}, user_id)
+      user = %User{id: user_id, email: email}
+      user_ids_by_credential = Map.put(user_ids_by_credential, {email, password}, user_id)
 
       state = %__MODULE__{
         state
@@ -50,7 +50,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl.State do
 
       {{:ok, user}, state}
     else
-      {{:error, :username_not_unique}, state}
+      {{:error, :email_not_unique}, state}
     end
   end
 
@@ -67,11 +67,11 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl.State do
     end
   end
 
-  @spec fetch_user_by_username_and_password(t, User.username(), User.password()) ::
+  @spec fetch_user_by_email_and_password(t, User.email(), User.password()) ::
           {:ok, User.t()} | {:error, :not_found}
-  def fetch_user_by_username_and_password(%__MODULE__{} = state, username, password)
-      when is_username(username) and is_password(password) do
-    with {:ok, user_id} <- fetch_user_id_by_username_and_password(state, username, password),
+  def fetch_user_by_email_and_password(%__MODULE__{} = state, email, password)
+      when is_email(email) and is_password(password) do
+    with {:ok, user_id} <- fetch_user_id_by_email_and_password(state, email, password),
          {:ok, user} <- fetch_user_for_id(state, user_id) do
       {:ok, user}
     else
@@ -131,9 +131,9 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl.State do
     {:ok, state}
   end
 
-  @spec username_availible?(t, User.username()) :: boolean
-  defp username_availible?(%__MODULE__{users: users}, username) when is_username(username) do
-    !Enum.any?(users, &match?(%User{username: ^username}, &1))
+  @spec email_availible?(t, User.email()) :: boolean
+  defp email_availible?(%__MODULE__{users: users}, email) when is_email(email) do
+    !Enum.any?(users, &match?(%User{email: ^email}, &1))
   end
 
   @spec fetch_login_for_id(t, Login.id()) :: {:ok, Login.t()} | {:error, :not_found}
@@ -150,13 +150,13 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl.State do
     end
   end
 
-  @spec fetch_user_id_by_username_and_password(t, User.username(), User.password()) ::
+  @spec fetch_user_id_by_email_and_password(t, User.email(), User.password()) ::
           {:ok, User.id()} | {:error, :not_found}
-  defp fetch_user_id_by_username_and_password(%__MODULE__{} = state, username, password)
-       when is_username(username) and is_password(password) do
+  defp fetch_user_id_by_email_and_password(%__MODULE__{} = state, email, password)
+       when is_email(email) and is_password(password) do
     %__MODULE__{user_ids_by_credential: user_ids_by_credential} = state
 
-    case Map.fetch(user_ids_by_credential, {username, password}) do
+    case Map.fetch(user_ids_by_credential, {email, password}) do
       {:ok, user_id} ->
         {:ok, user_id}
 

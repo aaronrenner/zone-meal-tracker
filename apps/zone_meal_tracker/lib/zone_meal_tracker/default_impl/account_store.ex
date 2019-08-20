@@ -13,10 +13,10 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore do
   defdelegate child_spec(opts), to: __MODULE__.Supervisor
 
   @impl true
-  @spec create_user(User.username(), User.password()) ::
-          {:ok, User.t()} | {:error, :username_not_unique}
-  def create_user(username, password) when is_username(username) and is_password(password) do
-    impl().create_user(username, password)
+  @spec create_user(User.email(), User.password()) ::
+          {:ok, User.t()} | {:error, :email_not_unique}
+  def create_user(email, password) when is_email(email) and is_password(password) do
+    impl().create_user(email, password)
   end
 
   @impl true
@@ -32,11 +32,11 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore do
   end
 
   @impl true
-  @spec fetch_user_by_username_and_password(User.username(), User.password()) ::
+  @spec fetch_user_by_email_and_password(User.email(), User.password()) ::
           {:ok, User.t()} | {:error, :not_found}
-  def fetch_user_by_username_and_password(username, password)
-      when is_username(username) and is_password(password) do
-    impl().fetch_user_by_username_and_password(username, password)
+  def fetch_user_by_email_and_password(email, password)
+      when is_email(email) and is_password(password) do
+    impl().fetch_user_by_email_and_password(email, password)
   end
 
   @impl true

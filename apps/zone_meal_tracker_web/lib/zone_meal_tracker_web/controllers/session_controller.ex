@@ -18,7 +18,7 @@ defmodule ZoneMealTrackerWeb.SessionController do
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Invalid username/password combination.")
+        |> put_flash(:error, "Invalid email/password combination.")
         |> render("new.html", changeset: changeset)
     end
   end

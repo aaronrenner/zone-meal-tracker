@@ -19,20 +19,20 @@ defmodule ZoneMealTracker do
   """
   @impl true
   @spec register_user(String.t(), String.t()) ::
-          {:ok, User.t()} | {:error, :username_already_registered}
-  def register_user(username, password) when is_username(username) and is_password(password) do
-    current_impl().register_user(username, password)
+          {:ok, User.t()} | {:error, :email_already_registered}
+  def register_user(email, password) when is_email(email) and is_password(password) do
+    current_impl().register_user(email, password)
   end
 
   @doc """
   Fetches a user with the matching email and password
   """
   @impl true
-  @spec fetch_user_by_username_and_password(String.t(), String.t()) ::
+  @spec fetch_user_by_email_and_password(String.t(), String.t()) ::
           {:ok, User.t()} | {:error, :not_found}
-  def fetch_user_by_username_and_password(username, password)
-      when is_binary(username) and is_binary(password) do
-    current_impl().fetch_user_by_username_and_password(username, password)
+  def fetch_user_by_email_and_password(email, password)
+      when is_binary(email) and is_binary(password) do
+    current_impl().fetch_user_by_email_and_password(email, password)
   end
 
   @doc """
