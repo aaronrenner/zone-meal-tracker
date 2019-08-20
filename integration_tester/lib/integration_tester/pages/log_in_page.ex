@@ -7,6 +7,8 @@ defmodule IntegrationTester.Pages.LoginPage do
   @password_field Query.text_field("Password")
   @log_in_button Query.button("Log in")
 
+  def path, do: "/session/new"
+
   def log_in(session, username, password) do
     session
     |> fill_in(@username_field, with: username)

@@ -9,14 +9,23 @@ defmodule ZoneMealTrackerWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :authentication_required do
+    plug ZoneMealTrackerWeb.Plugs.EnsureAuthenticated
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
   scope "/", ZoneMealTrackerWeb do
-    pipe_through :browser
+    pipe_through [:browser, :authentication_required]
 
     get "/", PageController, :index
+  end
+
+  scope "/", ZoneMealTrackerWeb do
+    pipe_through :browser
+
     resources "/session", SessionController, only: [:new, :create, :delete], singleton: true
     resources "/users", UserController, only: [:new, :create]
   end
