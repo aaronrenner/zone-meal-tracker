@@ -11,10 +11,12 @@ import Config
 
 # Configures the endpoint
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
-  url: [host: "localhost"],
   secret_key_base: "Eyi3LcZnkb4PU13uyDjMxQXFtEChAQD6jHnw50gxqKmWDXvn0M1VIb/va9s9NiNy",
   render_errors: [view: ZoneMealTrackerWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: ZoneMealTrackerWeb.PubSub, adapter: Phoenix.PubSub.PG2]
+
+config :zmt_config,
+  url: [host: "localhost"]
 
 # Sample configuration:
 #

@@ -44,6 +44,7 @@ defmodule ZoneMealTrackerWeb.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
+      {:zmt_config, in_umbrella: true},
       {:zone_meal_tracker, in_umbrella: true},
       {:mox, "~> 0.5", only: :test},
       {:stream_data, "~> 0.1", only: [:dev, :test]}

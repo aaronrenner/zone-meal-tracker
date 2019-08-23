@@ -43,4 +43,23 @@ defmodule ZoneMealTrackerWeb.Endpoint do
     signing_salt: "v9PMNCmZ"
 
   plug ZoneMealTrackerWeb.Router
+
+  def init(_key, config) do
+    %ZMTConfig.Config{http_port: http_port, url: url} = ZMTConfig.get_config()
+
+    config =
+      deep_merge(config,
+        http: [port: http_port],
+        url: url
+      )
+
+    {:ok, config}
+  end
+
+  defp deep_merge(config_1, config_2) do
+    # Need to wrap in a keyword list so it will deep merge
+    # properly
+    Config.Reader.merge([a: config_1], a: config_2)
+    |> Keyword.fetch!(:a)
+  end
 end

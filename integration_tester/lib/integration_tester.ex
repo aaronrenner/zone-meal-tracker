@@ -13,9 +13,7 @@ defmodule IntegrationTester do
       [
         zone_meal_tracker_web: Application.get_all_env(:zone_meal_tracker_web)
       ]
-      |> Config.Reader.merge(
-        zone_meal_tracker_web: [{ZoneMealTrackerWeb.Endpoint, [http: [port: port_number]]}]
-      )
+      |> Config.Reader.merge(zmt_config: [http_port: port_number])
 
     Application.put_all_env(desired_config, persistent: true)
 
