@@ -62,6 +62,12 @@ defmodule ZoneMealTracker do
     current_impl().delete_login(login_id)
   end
 
+  @impl true
+  @spec send_forgot_password_link(User.email()) :: :ok
+  def send_forgot_password_link(email) when is_email(email) do
+    current_impl().send_forgot_password_link(email)
+  end
+
   @type reset_system_opt :: {:force, true}
 
   @doc """

@@ -2,6 +2,7 @@ defmodule IntegrationTester.AuthenticationTest do
   use ExUnit.Case
   use Wallaby.DSL
 
+  alias IntegrationTester.Pages.ForgotPasswordPage
   alias IntegrationTester.Pages.HomePage
   alias IntegrationTester.Pages.LoginPage
   alias IntegrationTester.Pages.SignUpPage
@@ -62,6 +63,23 @@ defmodule IntegrationTester.AuthenticationTest do
     session_2
     |> visit(HomePage.path())
     |> Site.assert_logged_out()
+  end
+
+  test "forgot password allows for resetting the password" do
+    create_user("foo@bar.com", "forgotten")
+
+    {:ok, session} = Wallaby.start_session()
+
+    session
+    |> visit(HomePage.path())
+    |> Site.click_log_in_link()
+    |> LoginPage.click_forgot_password_link()
+    |> ForgotPasswordPage.request_reset("foo@bar.com")
+  end
+
+  defp create_user(email, password) do
+    {:ok, _} = ZoneMealTracker.register_user(email, password)
+    :ok
   end
 
   defp fetch_zmt_cookie_value!(session) do

@@ -26,6 +26,7 @@ defmodule ZoneMealTrackerWeb.Router do
   scope "/", ZoneMealTrackerWeb do
     pipe_through :browser
 
+    resources "/passwords", PasswordController, only: [:new, :create]
     resources "/session", SessionController, only: [:new, :create, :delete], singleton: true
     resources "/users", UserController, only: [:new, :create]
   end

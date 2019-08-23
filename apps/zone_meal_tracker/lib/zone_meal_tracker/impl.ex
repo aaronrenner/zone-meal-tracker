@@ -19,5 +19,7 @@ defmodule ZoneMealTracker.Impl do
 
   @callback delete_login(login_id) :: :ok
 
+  @callback send_forgot_password_link(User.email()) :: :ok
+
   @callback reset_system(force: true) :: :ok
 end

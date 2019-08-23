@@ -71,6 +71,12 @@ defmodule ZoneMealTracker.DefaultImpl do
   end
 
   @impl true
+  @spec send_forgot_password_link(User.email()) :: :ok
+  def send_forgot_password_link(email) when is_email(email) do
+    :ok
+  end
+
+  @impl true
   @spec reset_system([ZoneMealTracker.reset_system_opt()]) :: :ok | none
   def reset_system(opts) when is_list(opts) do
     case Keyword.fetch(opts, :force) do

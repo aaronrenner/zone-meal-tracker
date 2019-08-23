@@ -1,6 +1,6 @@
-<h1>Log in</h1>
+<h1>Forgot Password</h1>
 
-<%= form_for @changeset, Routes.session_path(@conn, :create), fn f -> %>
+<%= form_for @changeset, Routes.password_path(@conn, :create), fn f -> %>
     <%= if @changeset.action do %>
         <div class="alert alert-danger">
             <p>Oops, something went wrong! Please check the errors below.</p>
@@ -11,12 +11,7 @@
     <%= text_input f, :email %>
     <%= error_tag f, :email %>
 
-    <%= label f, :password %>
-    <%= password_input f, :password %>
-    <%= error_tag f, :password %>
-
     <div>
-        <%= submit "Log in" %>
-        <%= link "Forgot password", to: Routes.password_path(@conn, :new) %>
+        <%= submit "Send reset link" %>
     </div>
 <% end %>
