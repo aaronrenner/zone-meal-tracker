@@ -55,4 +55,13 @@ config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
     ]
   ]
 
+# Configure your database
+config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "zone_meal_tracker_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 config :zmt_config, http_port: 4000

@@ -9,3 +9,8 @@ Application.put_env(
 )
 
 ExUnit.start()
+
+Ecto.Adapters.SQL.Sandbox.mode(
+  ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
+  :manual
+)

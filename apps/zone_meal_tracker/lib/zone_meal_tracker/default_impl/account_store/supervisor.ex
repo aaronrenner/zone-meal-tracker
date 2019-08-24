@@ -3,6 +3,7 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.Supervisor do
   use Supervisor
 
   alias ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl
+  alias ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl
 
   def start_link(init_arg) do
     Supervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
@@ -11,7 +12,8 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore.Supervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      {InMemoryImpl, name: InMemoryImpl}
+      {InMemoryImpl, name: InMemoryImpl},
+      {PostgresImpl, name: PostgresImpl}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

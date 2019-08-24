@@ -108,6 +108,12 @@ build:integration_tester:
 unit_tests:
   stage: test
   script: mix test
+  services:
+    - postgres:11.5-alpine
+  variables:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_HOST: postgres
   dependencies:
     - install_asdf_env_and_deps
     - build:test

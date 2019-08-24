@@ -15,6 +15,12 @@ config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   render_errors: [view: ZoneMealTrackerWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: ZoneMealTrackerWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :zone_meal_tracker,
+  ecto_repos: [ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo]
+
+config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
+  priv: "priv/account_store/postgres_impl/repo"
+
 config :zmt_config,
   url: [host: "localhost"]
 
