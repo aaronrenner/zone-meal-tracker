@@ -4,6 +4,9 @@ variables:
   LANG: C.UTF-8
   MIX_HOME: "$CI_PROJECT_DIR/.mix"
   ASDF_DATA_DIR: "$CI_PROJECT_DIR/.asdf"
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: postgres
 
 stages:
   - install
@@ -110,10 +113,6 @@ unit_tests:
   script: mix test
   services:
     - postgres:11.5-alpine
-  variables:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_HOST: postgres
   dependencies:
     - install_asdf_env_and_deps
     - build:test
@@ -137,6 +136,8 @@ integration_tests:
         popd
     - cd integration_tester
     - MIX_ENV=test mix test
+  services:
+    - postgres:11.5-alpine
   dependencies:
     - install_asdf_env_and_deps
     - build:integration_tester

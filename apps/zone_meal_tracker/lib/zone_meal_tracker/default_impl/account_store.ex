@@ -3,7 +3,6 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore do
 
   import ZoneMealTracker.DefaultImpl.AccountStore.Guards
 
-  alias ZoneMealTracker.DefaultImpl.AccountStore.InMemoryImpl
   alias ZoneMealTracker.DefaultImpl.AccountStore.Login
   alias ZoneMealTracker.DefaultImpl.AccountStore.User
 
@@ -54,6 +53,6 @@ defmodule ZoneMealTracker.DefaultImpl.AccountStore do
   end
 
   defp impl do
-    Application.get_env(:zone_meal_tracker, :account_store, InMemoryImpl)
+    Application.get_env(:zone_meal_tracker, :account_store, __MODULE__.PostgresImpl)
   end
 end
