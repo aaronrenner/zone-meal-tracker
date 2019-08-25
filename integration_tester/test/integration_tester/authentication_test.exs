@@ -1,6 +1,7 @@
 defmodule IntegrationTester.AuthenticationTest do
   use ExUnit.Case
   use Wallaby.DSL
+  use Bamboo.Test, shared: true
 
   alias IntegrationTester.Pages.HomePage
   alias IntegrationTester.Pages.LoginPage
@@ -16,11 +17,19 @@ defmodule IntegrationTester.AuthenticationTest do
   test "user signup, logout, and login" do
     {:ok, session} = Wallaby.start_session()
 
+    session =
+      session
+      |> visit(HomePage.path())
+      |> Site.click_sign_up_link()
+      |> SignUpPage.register("foo@bar.com", "password")
+      |> Site.assert_logged_in()
+
+    assert_email_delivered_with(
+      to: ["foo@bar.com"],
+      subject: "Welcome to ZoneMealTracker"
+    )
+
     session
-    |> visit(HomePage.path())
-    |> Site.click_sign_up_link()
-    |> SignUpPage.register("foo@bar.com", "password")
-    |> Site.assert_logged_in()
     |> Site.click_log_out_link()
     |> Site.assert_logged_out()
     |> Site.click_log_in_link()

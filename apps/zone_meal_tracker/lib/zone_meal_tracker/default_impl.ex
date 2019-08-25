@@ -5,6 +5,7 @@ defmodule ZoneMealTracker.DefaultImpl do
 
   alias ZoneMealTracker.DefaultImpl.AccountStore
   alias ZoneMealTracker.DefaultImpl.DomainTranslator
+  alias ZoneMealTracker.DefaultImpl.Notifications
   alias ZoneMealTracker.Login
   alias ZoneMealTracker.User
 
@@ -19,7 +20,13 @@ defmodule ZoneMealTracker.DefaultImpl do
   def register_user(email, password) when is_email(email) and is_password(password) do
     case AccountStore.create_user(email, password) do
       {:ok, %AccountStore.User{} = user} ->
-        {:ok, DomainTranslator.to_domain_user(user)}
+        domain_user = DomainTranslator.to_domain_user(user)
+        %User{id: user_id, email: email} = domain_user
+
+        :ok = Notifications.set_user_email(user_id, email)
+        :ok = Notifications.send_welcome_message(user_id)
+
+        {:ok, domain_user}
 
       {:error, :email_not_unique} ->
         {:error, :email_already_registered}
@@ -76,6 +83,7 @@ defmodule ZoneMealTracker.DefaultImpl do
     case Keyword.fetch(opts, :force) do
       {:ok, true} ->
         :ok = AccountStore.reset(force: true)
+        :ok = Notifications.reset(force: true)
         :ok
 
       _ ->

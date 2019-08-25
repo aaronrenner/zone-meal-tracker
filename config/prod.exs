@@ -12,6 +12,10 @@ use Mix.Config
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :zone_meal_tracker,
+       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.Emails.BambooImpl.Mailer,
+       adapter: Bamboo.LocalAdapter
+
 config :zmt_config,
   url: [host: "example.com", port: 80]
 

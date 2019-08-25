@@ -7,6 +7,7 @@ defmodule ZoneMealTracker.DefaultImplTest do
   alias ZoneMealTracker.DefaultImpl.AccountStore
   alias ZoneMealTracker.DefaultImpl.DomainTranslator
   alias ZoneMealTracker.DefaultImpl.MockAccountStore
+  alias ZoneMealTracker.DefaultImpl.MockNotifications
   alias ZoneMealTracker.Login
   alias ZoneMealTracker.User
 
@@ -15,11 +16,16 @@ defmodule ZoneMealTracker.DefaultImplTest do
   test "register_user/2 when email is unique" do
     email = "foo@bar.com"
     password = "password"
-    account_store_user = %AccountStore.User{id: "123", email: email}
+    user_id = "123"
+    account_store_user = %AccountStore.User{id: user_id, email: email}
 
     expect(MockAccountStore, :create_user, fn ^email, ^password ->
       {:ok, account_store_user}
     end)
+
+    MockNotifications
+    |> expect(:set_user_email, fn ^user_id, ^email -> :ok end)
+    |> expect(:send_welcome_message, fn ^user_id -> :ok end)
 
     assert {:ok, %User{} = user} = DefaultImpl.register_user(email, password)
 
@@ -118,6 +124,7 @@ defmodule ZoneMealTracker.DefaultImplTest do
 
   test "reset_system/1 with force: true, calls the various components resets" do
     expect(MockAccountStore, :reset, fn [force: true] -> :ok end)
+    expect(MockNotifications, :reset, fn [force: true] -> :ok end)
     assert :ok = DefaultImpl.reset_system(force: true)
   end
 

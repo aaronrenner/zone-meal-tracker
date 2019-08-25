@@ -16,10 +16,17 @@ config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   pubsub: [name: ZoneMealTrackerWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
 config :zone_meal_tracker,
-  ecto_repos: [ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo]
+  ecto_repos: [
+    ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
+    ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo
+  ]
 
 config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
   priv: "priv/account_store/postgres_impl/repo"
+
+config :zone_meal_tracker,
+       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
+       priv: "priv/notifications/default_impl/notification_preference_store/postgres_impl/repo"
 
 config :zmt_config,
   url: [host: "localhost"]

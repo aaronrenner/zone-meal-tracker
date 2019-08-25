@@ -35,6 +35,7 @@ defmodule ZoneMealTracker.MixProject do
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
       {:argon2_elixir, "~> 2.0"},
+      {:bamboo, "~> 1.3"},
       {:mox, "~> 0.5", only: :test}
     ]
   end

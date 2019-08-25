@@ -12,8 +12,21 @@ config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
+# Configure your database
+config :zone_meal_tracker,
+       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
+       username: "postgres",
+       password: "postgres",
+       database: "zone_meal_tracker_test",
+       hostname: System.get_env("POSTGRES_HOST") || "localhost",
+       pool: Ecto.Adapters.SQL.Sandbox
+
 config :argon2_elixir,
   t_cost: 1,
   m_cost: 8
+
+config :zone_meal_tracker,
+       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.Emails.BambooImpl.Mailer,
+       adapter: Bamboo.TestAdapter
 
 config :zmt_config, http_port: 4002
