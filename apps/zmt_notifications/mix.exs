@@ -1,9 +1,9 @@
-defmodule ZoneMealTracker.MixProject do
+defmodule ZMTNotifications.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :zone_meal_tracker,
+      app: :zmt_notifications,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -21,7 +21,7 @@ defmodule ZoneMealTracker.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ZoneMealTracker.Application, []}
+      mod: {ZMTNotifications.Application, []}
     ]
   end
 
@@ -34,8 +34,7 @@ defmodule ZoneMealTracker.MixProject do
     [
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:argon2_elixir, "~> 2.0"},
-      {:zmt_notifications, in_umbrella: true},
+      {:bamboo, "~> 1.3"},
       {:mox, "~> 0.5", only: :test}
     ]
   end
@@ -48,7 +47,7 @@ defmodule ZoneMealTracker.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]

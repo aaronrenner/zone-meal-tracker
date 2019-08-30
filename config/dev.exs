@@ -65,8 +65,8 @@ config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl
   pool_size: 10
 
 # Configure your database
-config :zone_meal_tracker,
-       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
+config :zmt_notifications,
+       ZMTNotifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
        username: "postgres",
        password: "postgres",
        database: "zone_meal_tracker_dev",
@@ -74,8 +74,8 @@ config :zone_meal_tracker,
        show_sensitive_data_on_connection_error: true,
        pool_size: 10
 
-config :zone_meal_tracker,
-       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.Emails.BambooImpl.Mailer,
+config :zmt_notifications,
+       ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.LocalAdapter,
        open_email_in_browser_url: "http://localhost:4000/sent_emails"
 

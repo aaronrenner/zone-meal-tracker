@@ -13,8 +13,8 @@ config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl
   pool: Ecto.Adapters.SQL.Sandbox
 
 # Configure your database
-config :zone_meal_tracker,
-       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
+config :zmt_notifications,
+       ZMTNotifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
        username: "postgres",
        password: "postgres",
        database: "zone_meal_tracker_test",
@@ -25,8 +25,8 @@ config :argon2_elixir,
   t_cost: 1,
   m_cost: 8
 
-config :zone_meal_tracker,
-       ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.Emails.BambooImpl.Mailer,
+config :zmt_notifications,
+       ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.TestAdapter
 
 config :zmt_config, http_port: 4002

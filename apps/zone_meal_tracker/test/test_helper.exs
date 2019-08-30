@@ -9,33 +9,13 @@ Application.put_env(
 )
 
 Mox.defmock(ZoneMealTracker.DefaultImpl.MockNotifications,
-  for: ZoneMealTracker.DefaultImpl.Notifications.Impl
+  for: ZMTNotifications.Impl
 )
 
 Application.put_env(
-  :zone_meal_tracker,
-  :notifications_impl,
+  :zmt_notifications,
+  :impl,
   ZoneMealTracker.DefaultImpl.MockNotifications
-)
-
-Mox.defmock(ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.MockNotificationPreferenceStore,
-  for: ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.NotificationPreferenceStore.Impl
-)
-
-Application.put_env(
-  :zone_meal_tracker,
-  :notification_preference_store_impl,
-  ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.MockNotificationPreferenceStore
-)
-
-Mox.defmock(ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.MockEmails,
-  for: ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.Emails.Impl
-)
-
-Application.put_env(
-  :zone_meal_tracker,
-  :emails_impl,
-  ZoneMealTracker.DefaultImpl.Notifications.DefaultImpl.MockEmails
 )
 
 ExUnit.start()

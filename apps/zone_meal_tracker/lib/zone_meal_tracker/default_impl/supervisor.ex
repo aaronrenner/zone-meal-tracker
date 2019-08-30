@@ -3,7 +3,6 @@ defmodule ZoneMealTracker.DefaultImpl.Supervisor do
   use Supervisor
 
   alias ZoneMealTracker.DefaultImpl.AccountStore
-  alias ZoneMealTracker.DefaultImpl.Notifications
 
   def start_link(init_arg) do
     Supervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
@@ -12,8 +11,7 @@ defmodule ZoneMealTracker.DefaultImpl.Supervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      AccountStore,
-      Notifications
+      AccountStore
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

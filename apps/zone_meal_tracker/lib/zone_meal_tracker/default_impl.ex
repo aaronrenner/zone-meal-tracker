@@ -5,7 +5,6 @@ defmodule ZoneMealTracker.DefaultImpl do
 
   alias ZoneMealTracker.DefaultImpl.AccountStore
   alias ZoneMealTracker.DefaultImpl.DomainTranslator
-  alias ZoneMealTracker.DefaultImpl.Notifications
   alias ZoneMealTracker.Login
   alias ZoneMealTracker.User
 
@@ -23,8 +22,8 @@ defmodule ZoneMealTracker.DefaultImpl do
         domain_user = DomainTranslator.to_domain_user(user)
         %User{id: user_id, email: email} = domain_user
 
-        :ok = Notifications.set_user_email(user_id, email)
-        :ok = Notifications.send_welcome_message(user_id)
+        :ok = ZMTNotifications.set_user_email(user_id, email)
+        :ok = ZMTNotifications.send_welcome_message(user_id)
 
         {:ok, domain_user}
 
@@ -83,7 +82,7 @@ defmodule ZoneMealTracker.DefaultImpl do
     case Keyword.fetch(opts, :force) do
       {:ok, true} ->
         :ok = AccountStore.reset(force: true)
-        :ok = Notifications.reset(force: true)
+        :ok = ZMTNotifications.reset(force: true)
         :ok
 
       _ ->
