@@ -13,7 +13,8 @@ import Config
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   secret_key_base: "Eyi3LcZnkb4PU13uyDjMxQXFtEChAQD6jHnw50gxqKmWDXvn0M1VIb/va9s9NiNy",
   render_errors: [view: ZoneMealTrackerWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ZoneMealTrackerWeb.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: ZoneMealTrackerWeb.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [signing_salt: "EhYhdIQ4NlcaoMEIErATYRvxONTe1XtX"]
 
 config :zone_meal_tracker,
   ecto_repos: [

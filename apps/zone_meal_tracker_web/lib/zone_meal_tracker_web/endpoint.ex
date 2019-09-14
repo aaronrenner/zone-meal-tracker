@@ -1,6 +1,8 @@
 defmodule ZoneMealTrackerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :zone_meal_tracker_web
 
+  socket "/live", Phoenix.LiveView.Socket
+
   socket "/socket", ZoneMealTrackerWeb.UserSocket,
     websocket: true,
     longpoll: false
