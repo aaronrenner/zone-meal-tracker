@@ -27,6 +27,8 @@ defmodule ZoneMealTrackerWeb.Router do
   scope "/", ZoneMealTrackerWeb do
     pipe_through :browser
 
+    get "/log", LogController, :index
+    live "/log/:date", LogLive
     resources "/session", SessionController, only: [:new, :create, :delete], singleton: true
     resources "/users", UserController, only: [:new, :create]
   end

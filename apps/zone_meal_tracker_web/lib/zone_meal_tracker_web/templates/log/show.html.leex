@@ -1,0 +1,4 @@
+<%= content_tag(:h1, @date, data: [current_date: @date]) %>
+
+<%= live_link "Prev", to: Routes.live_path(@socket, LogLive, @date|> Date.add(-1)|> to_string()) %> |
+<%= live_link "Next", to: Routes.live_path(@socket, LogLive, @date |> Date.add(1) |> to_string()) %>
