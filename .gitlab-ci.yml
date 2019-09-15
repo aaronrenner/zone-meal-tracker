@@ -123,7 +123,7 @@ integration_tests:
     - |
         mkdir /tmp/chromedriver && \
         pushd /tmp/chromedriver && \
-        curl -O https://chromedriver.storage.googleapis.com/75.0.3770.140/chromedriver_linux64.zip && \
+        curl -O https://chromedriver.storage.googleapis.com/77.0.3865.40/chromedriver_linux64.zip && \
         unzip chromedriver_linux64.zip && \
         mv chromedriver /usr/local/bin &&
         popd
