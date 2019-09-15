@@ -52,3 +52,5 @@ config :zmt_config,
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+
+import_config "#{Mix.env()}.secret.exs"
