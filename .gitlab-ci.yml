@@ -1,4 +1,4 @@
-image: registry.gitlab.com/aaronrenner/docker-asdf
+image: registry.gitlab.com/aaronrenner/docker-asdf:alpine
 
 variables:
   LANG: C.UTF-8
@@ -23,6 +23,7 @@ before_script:
     fi
 
 install_asdf_env_and_deps:
+  image: registry.gitlab.com/aaronrenner/docker-asdf:bionic
   stage: install
   variables:
     NODEJS_CHECK_SIGNATURES: "no"
@@ -43,7 +44,38 @@ install_asdf_env_and_deps:
     # Cache the timestamp the repo was originally checked out, so it can
     # be set back to this in later jobs and allows us to skip unnecessary
     # recompiles.
-    - stat -c "%y" README.md > .cloned_at
+    - date "+%Y-%m-%d %H:%M:%S" -r README.md > .cloned_at
+  artifacts:
+    expire_in: 2 hrs
+    paths:
+      - $ASDF_DATA_DIR
+      - $MIX_HOME
+      - .cloned_at
+
+install_asdf_env_and_deps_alpine:
+  stage: install
+  image: registry.gitlab.com/aaronrenner/docker-asdf:alpine
+  variables:
+    NODEJS_CHECK_SIGNATURES: "no"
+    BUILD_CACHE_VERSION: 1
+  cache:
+    key: install-alpine-$BUILD_CACHE_VERSION
+    paths:
+      - $ASDF_DATA_DIR
+      - $MIX_HOME
+  script:
+    - asdf plugin-add erlang || true
+    - asdf plugin-add elixir || true
+    - asdf plugin-add nodejs || true
+    # Have to run twice due to: https://github.com/asdf-vm/asdf-erlang/issues/57
+    - asdf install && asdf install
+    # Setting up elixir and erlang
+    - mix local.hex --force
+    - mix local.rebar --force
+    # Cache the timestamp the repo was originally checked out, so it can
+    # be set back to this in later jobs and allows us to skip unnecessary
+    # recompiles.
+    - date "+%Y-%m-%d %H:%M:%S" -r README.md > .cloned_at
   artifacts:
     expire_in: 2 hrs
     paths:
@@ -53,15 +85,17 @@ install_asdf_env_and_deps:
 
 .build:
   stage: build
+  variables:
+    BUILD_CACHE_VERSION: 1
   cache:
-    key: $CI_JOB_NAME
+    key: $CI_JOB_NAME-$BUILD_CACHE_VERSION
     paths:
       - "_build"
       - "deps"
   script:
     - mix do deps.get, compile --warnings-as-errors
   dependencies:
-    - install_asdf_env_and_deps
+    - install_asdf_env_and_deps_alpine
   artifacts:
     expire_in: 2 hrs
     paths:
@@ -78,6 +112,7 @@ build:test:
 
 build:integration_tester:
   stage: build
+  image: registry.gitlab.com/aaronrenner/docker-asdf:bionic
   cache:
     key: $CI_JOB_NAME
     paths:
@@ -85,6 +120,8 @@ build:integration_tester:
       - "integration_tester/deps"
   variables:
     MIX_ENV: test
+  dependencies:
+    - install_asdf_env_and_deps
   script:
     - |
         pushd apps/zone_meal_tracker_web/assets && \
@@ -114,11 +151,12 @@ unit_tests:
   services:
     - postgres:11.5-alpine
   dependencies:
-    - install_asdf_env_and_deps
+    - install_asdf_env_and_deps_alpine
     - build:test
 
 integration_tests:
   stage: test
+  image: registry.gitlab.com/aaronrenner/docker-asdf:bionic
   script:
     - |
         mkdir /tmp/chromedriver && \
@@ -150,7 +188,7 @@ integration_test_linters:
     # Check for unused dependencies
     - mix deps.unlock --unused && git diff --exit-code
   dependencies:
-    - install_asdf_env_and_deps
+    - install_asdf_env_and_deps_alpine
     - build:integration_tester
 
 linters:
@@ -161,7 +199,7 @@ linters:
     # Check for unused dependencies
     - mix deps.unlock --unused && git diff --exit-code
   dependencies:
-    - install_asdf_env_and_deps
+    - install_asdf_env_and_deps_alpine
     - build:dev
 
 dialyzer:
@@ -179,5 +217,5 @@ dialyzer:
       - "_build/dev/*.plt.hash"
       - $MIX_HOME/*.plt
   dependencies:
-    - install_asdf_env_and_deps
+    - install_asdf_env_and_deps_alpine
     - build:dev
