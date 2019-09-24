@@ -110,6 +110,13 @@ build:test:
   variables:
     MIX_ENV: test
 
+build:production_container:
+  extends: .build
+  variables:
+    MIX_ENV: prod
+  script:
+    - mix do deps.get, compile --warnings-as-errors
+
 build:integration_tester:
   stage: build
   image: registry.gitlab.com/aaronrenner/docker-asdf:bionic
