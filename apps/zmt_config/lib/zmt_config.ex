@@ -5,6 +5,7 @@ defmodule ZMTConfig do
 
   alias ZMTConfig.Config
   alias ZMTConfig.DefaultImpl
+  alias ZMTConfig.InvalidConfigurationError
 
   @behaviour ZMTConfig.Impl
 
@@ -12,9 +13,9 @@ defmodule ZMTConfig do
   Gets the current config
   """
   @impl true
-  @spec get_config() :: Config.t()
-  def get_config do
-    current_impl().get_config()
+  @spec fetch_config() :: {:ok, Config.t()} | {:error, InvalidConfigurationError.t()}
+  def fetch_config do
+    current_impl().fetch_config()
   end
 
   defp current_impl do

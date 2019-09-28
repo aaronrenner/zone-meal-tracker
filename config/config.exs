@@ -11,7 +11,6 @@ import Config
 
 # Configures the endpoint
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
-  secret_key_base: "Eyi3LcZnkb4PU13uyDjMxQXFtEChAQD6jHnw50gxqKmWDXvn0M1VIb/va9s9NiNy",
   render_errors: [view: ZoneMealTrackerWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: ZoneMealTrackerWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
@@ -34,7 +33,8 @@ config :zmt_notifications,
        priv: "priv/notifications/default_impl/notification_preference_store/postgres_impl/repo"
 
 config :zmt_config,
-  url: [host: "localhost"]
+  url: [host: "localhost"],
+  secret_key_base: "Eyi3LcZnkb4PU13uyDjMxQXFtEChAQD6jHnw50gxqKmWDXvn0M1VIb/va9s9NiNy"
 
 # Sample configuration:
 #

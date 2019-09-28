@@ -1,6 +1,8 @@
 defmodule ZoneMealTrackerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :zone_meal_tracker_web
 
+  alias ZMTConfig.InvalidConfigurationError
+
   socket "/socket", ZoneMealTrackerWeb.UserSocket,
     websocket: true,
     longpoll: false
@@ -45,15 +47,26 @@ defmodule ZoneMealTrackerWeb.Endpoint do
   plug ZoneMealTrackerWeb.Router
 
   def init(_key, config) do
-    %ZMTConfig.Config{http_port: http_port, url: url} = ZMTConfig.get_config()
+    case ZMTConfig.fetch_config() do
+      {:ok, %ZMTConfig.Config{} = zmt_config} ->
+        %ZMTConfig.Config{
+          http_port: http_port,
+          url: url,
+          secret_key_base: secret_key_base
+        } = zmt_config
 
-    config =
-      deep_merge(config,
-        http: [port: http_port],
-        url: url
-      )
+        config =
+          deep_merge(config,
+            http: [port: http_port],
+            url: url,
+            secret_key_base: secret_key_base
+          )
 
-    {:ok, config}
+        {:ok, config}
+
+      {:error, %InvalidConfigurationError{} = error} ->
+        raise error
+    end
   end
 
   defp deep_merge(config_1, config_2) do
