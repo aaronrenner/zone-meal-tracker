@@ -24,4 +24,15 @@ defmodule ZoneMealTrackerWeb.Config.DefaultImpl do
 
     {:ok, url_settings}
   end
+
+  @impl true
+  @spec fetch_secret_key_base() :: {:ok, String.t()}
+  def fetch_secret_key_base do
+    secret_key_base =
+      :zone_meal_tracker_web
+      |> Application.fetch_env!(ZoneMealTrackerWeb.Endpoint)
+      |> Keyword.fetch!(:secret_key_base)
+
+    {:ok, secret_key_base}
+  end
 end

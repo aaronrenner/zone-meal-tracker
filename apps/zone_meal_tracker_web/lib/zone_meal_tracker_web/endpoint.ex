@@ -48,11 +48,13 @@ defmodule ZoneMealTrackerWeb.Endpoint do
 
   def init(_key, config) do
     with {:ok, http_port} <- ZMTWebConfig.fetch_http_port(),
-         {:ok, url_settings} <- ZMTWebConfig.fetch_url_settings() do
+         {:ok, url_settings} <- ZMTWebConfig.fetch_url_settings(),
+         {:ok, secret_key_base} <- ZMTWebConfig.fetch_secret_key_base() do
       config =
         deep_merge(config,
           http: [port: http_port],
-          url: url_settings
+          url: url_settings,
+          secret_key_base: secret_key_base
         )
 
       {:ok, config}

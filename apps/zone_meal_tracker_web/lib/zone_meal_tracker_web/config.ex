@@ -20,6 +20,12 @@ defmodule ZoneMealTrackerWeb.Config do
     impl().fetch_url_settings()
   end
 
+  @impl true
+  @spec fetch_secret_key_base() :: {:ok, String.t()}
+  def fetch_secret_key_base do
+    impl().fetch_secret_key_base()
+  end
+
   defp impl do
     Application.get_env(:zone_meal_tracker_web, :config_impl, DefaultImpl)
   end
