@@ -1,6 +1,8 @@
 defmodule ZoneMealTrackerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :zone_meal_tracker_web
 
+  alias ZoneMealTrackerWeb.Config, as: ZMTWebConfig
+
   socket "/socket", ZoneMealTrackerWeb.UserSocket,
     websocket: true,
     longpoll: false
@@ -45,15 +47,16 @@ defmodule ZoneMealTrackerWeb.Endpoint do
   plug ZoneMealTrackerWeb.Router
 
   def init(_key, config) do
-    %ZMTConfig.Config{http_port: http_port, url: url} = ZMTConfig.get_config()
+    with {:ok, http_port} <- ZMTWebConfig.fetch_http_port(),
+         {:ok, url_settings} <- ZMTWebConfig.fetch_url_settings() do
+      config =
+        deep_merge(config,
+          http: [port: http_port],
+          url: url_settings
+        )
 
-    config =
-      deep_merge(config,
-        http: [port: http_port],
-        url: url
-      )
-
-    {:ok, config}
+      {:ok, config}
+    end
   end
 
   defp deep_merge(config_1, config_2) do
