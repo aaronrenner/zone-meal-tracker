@@ -12,6 +12,9 @@ use Mix.Config
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :zone_meal_tracker_web,
+  config_impl: ZoneMealTrackerWeb.Config.SystemEnvImpl
+
 config :zone_meal_tracker,
        ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.LocalAdapter

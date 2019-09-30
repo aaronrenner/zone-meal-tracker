@@ -2,6 +2,7 @@ defmodule ZoneMealTrackerWeb.Config do
   @moduledoc false
 
   alias ZoneMealTrackerWeb.Config.DefaultImpl
+  alias ZoneMealTrackerWeb.Config.InvalidConfigurationError
 
   @behaviour ZoneMealTrackerWeb.Config.Impl
 
@@ -9,19 +10,19 @@ defmodule ZoneMealTrackerWeb.Config do
   @type url_settings :: Keyword.t()
 
   @impl true
-  @spec fetch_http_port() :: {:ok, port_number}
+  @spec fetch_http_port() :: {:ok, port_number} | {:error, InvalidConfigurationError.t()}
   def fetch_http_port do
     impl().fetch_http_port()
   end
 
   @impl true
-  @spec fetch_url_settings() :: {:ok, url_settings}
+  @spec fetch_url_settings() :: {:ok, url_settings} | {:error, InvalidConfigurationError.t()}
   def fetch_url_settings do
     impl().fetch_url_settings()
   end
 
   @impl true
-  @spec fetch_secret_key_base() :: {:ok, String.t()}
+  @spec fetch_secret_key_base() :: {:ok, String.t()} | {:error, InvalidConfigurationError.t()}
   def fetch_secret_key_base do
     impl().fetch_secret_key_base()
   end

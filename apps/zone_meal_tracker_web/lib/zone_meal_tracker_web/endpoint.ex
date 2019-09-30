@@ -2,6 +2,7 @@ defmodule ZoneMealTrackerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :zone_meal_tracker_web
 
   alias ZoneMealTrackerWeb.Config, as: ZMTWebConfig
+  alias ZoneMealTrackerWeb.Config.InvalidConfigurationError
 
   socket "/socket", ZoneMealTrackerWeb.UserSocket,
     websocket: true,
@@ -58,6 +59,9 @@ defmodule ZoneMealTrackerWeb.Endpoint do
         )
 
       {:ok, config}
+    else
+      {:error, %InvalidConfigurationError{} = error} ->
+        raise error
     end
   end
 
