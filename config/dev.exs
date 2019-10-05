@@ -7,6 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
+  http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -78,5 +79,3 @@ config :zmt_notifications,
        ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.LocalAdapter,
        open_email_in_browser_url: "http://localhost:4000/sent_emails"
-
-config :zmt_config, http_port: 4000

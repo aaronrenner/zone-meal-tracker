@@ -10,17 +10,13 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
+  http: [port: 4000],
+  url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
-
-config :zone_meal_tracker_web,
-  config_impl: ZoneMealTrackerWeb.Config.SystemEnvImpl
 
 config :zone_meal_tracker,
        ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.LocalAdapter
-
-config :zmt_config,
-  url: [host: "example.com", port: 80]
 
 # ## SSL Support
 #

@@ -2,7 +2,9 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint, server: false
+config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
+  http: [port: 4002],
+  server: false
 
 # Configure your database
 config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
@@ -28,5 +30,3 @@ config :argon2_elixir,
 config :zmt_notifications,
        ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.TestAdapter
-
-config :zmt_config, http_port: 4002
