@@ -8,7 +8,8 @@ defmodule ZoneMealTrackerUmbrella.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       dialyzer: dialyzer(),
-      docs: docs()
+      docs: docs(),
+      releases: releases()
     ]
   end
 
@@ -29,6 +30,12 @@ defmodule ZoneMealTrackerUmbrella.MixProject do
     [
       ignore_warnings: ".dialyzer_ignore.exs",
       list_unused_filters: true
+    ]
+  end
+
+  defp releases do
+    [
+      web: [applications: [zone_meal_tracker_web: :permanent]]
     ]
   end
 

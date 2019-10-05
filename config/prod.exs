@@ -12,11 +12,25 @@ use Mix.Config
 config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   http: [port: 4000],
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: true
 
 config :zone_meal_tracker,
        ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.LocalAdapter
+
+database_url = "ecto://postgres:postgres@localhost/zone_meal_tracker_prod"
+
+# Configure your database
+config :zone_meal_tracker, ZoneMealTracker.DefaultImpl.AccountStore.PostgresImpl.Repo,
+  url: database_url,
+  pool_size: 10
+
+# Configure your database
+config :zmt_notifications,
+       ZMTNotifications.DefaultImpl.NotificationPreferenceStore.PostgresImpl.Repo,
+       url: database_url,
+       pool_size: 10
 
 # ## SSL Support
 #
@@ -51,5 +65,3 @@ config :zone_meal_tracker,
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
-
-import_config "#{Mix.env()}.secret.exs"
