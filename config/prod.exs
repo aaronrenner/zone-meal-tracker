@@ -15,7 +15,7 @@ config :zone_meal_tracker_web, ZoneMealTrackerWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
-config :zone_meal_tracker,
+config :zmt_notifications,
        ZMTNotifications.DefaultImpl.Emails.BambooImpl.Mailer,
        adapter: Bamboo.LocalAdapter
 
