@@ -206,10 +206,7 @@ dialyzer:
   stage: test
   variables:
     DIALYZER_CACHE_VERSION: 1
-  # --format short can't be used here due to: https://github.com/jeremyjh/dialyxir/issues/314
-  # --list-unused-filters must be used as a command line option instead of in
-  #      mix.exs due to: https://github.com/jeremyjh/dialyxir/issues/313
-  script: mix dialyzer --list-unused-filters --halt-exit-status
+  script: mix dialyzer --format short
   cache:
     key: $CI_JOB_NAME-$DIALYZER_CACHE_VERSION
     paths:
