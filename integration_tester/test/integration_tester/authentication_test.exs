@@ -3,6 +3,7 @@ defmodule IntegrationTester.AuthenticationTest do
   use Wallaby.DSL
   use Bamboo.Test, shared: true
 
+  alias IntegrationTester.Emails
   alias IntegrationTester.Pages.HomePage
   alias IntegrationTester.Pages.LoginPage
   alias IntegrationTester.Pages.SignUpPage
@@ -24,7 +25,7 @@ defmodule IntegrationTester.AuthenticationTest do
       |> SignUpPage.register("foo@bar.com", "password")
       |> Site.assert_logged_in()
 
-    assert_email_delivered_with(
+    Emails.assert_email_delivered_with(
       to: ["foo@bar.com"],
       subject: "Welcome to ZoneMealTracker"
     )
