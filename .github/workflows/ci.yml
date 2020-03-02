@@ -1,0 +1,99 @@
+name: Continuous Integration
+
+on: [push, pull_request]
+
+env:
+  CACHE_VERSION: 1
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: "test"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        elixir: ["1.9.4"]
+        include:
+          - elixir: "1.9.4"
+            otp: "22.1"
+
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+      - name: Cache deps
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ env.CACHE_VERSION }}-deps-build-${{ env.MIX_ENV }}-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}-unit-tests
+      - name: Cache _build
+        uses: actions/cache@v1
+        with:
+          path: _build/${{ env.MIX_ENV }}
+          key: ${{ env.CACHE_VERSION }}-_build-${{ env.MIX_ENV }}-${{ matrix.otp }}-${{ matrix.elixir }}-unit-tests
+      - name: Install dependencies
+        run: mix deps.get
+      - name: Compile app
+        run: mix compile --force --warnings-as-errors
+      - name: Run unit tests
+        run: mix test
+      - run: mix format --check-formatted
+      - run: mix credo --strict
+      - name: Check for unused dependencies
+        run: mix deps.unlock --unused && git diff --exit-code
+
+  dialyzer:
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: "dev"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        elixir: ["1.9.4"]
+        include:
+          - elixir: "1.9.4"
+            otp: "22.1"
+
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+      - name: Cache deps
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ env.CACHE_VERSION }}-deps-build-${{ env.MIX_ENV }}-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}-dialyzer
+      - name: Cache _build
+        uses: actions/cache@v1
+        with:
+          path: _build/${{ env.MIX_ENV }}
+          key: ${{ env.CACHE_VERSION }}-_build-${{ env.MIX_ENV }}-${{ matrix.otp }}-${{ matrix.elixir }}-dialyzer
+      - name: Install dependencies
+        run: mix deps.get
+      - name: Compile app
+        run: mix compile --force --warnings-as-errors
+      - name: Build PLT
+        run: mix dialyzer --plt
+      - name: "Dialyzer"
+        run: mix dialyzer --format short
